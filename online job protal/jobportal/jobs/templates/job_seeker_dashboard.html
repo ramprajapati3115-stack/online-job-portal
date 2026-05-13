@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block title %}Job Seeker Dashboard - Job Portal{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h2 style="color: var(--primary-color);">Job Seeker Dashboard</h2>
+            <p>Welcome, <strong>{{ user.first_name }} {{ user.last_name }}</strong></p>
+        </div>
+    </div>
+    
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 style="color: var(--primary-color);">{{ applications.count }}</h3>
+                    <p>Total Applications</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 style="color: #27ae60;">
+                        {% regroup applications by status as status_list %}
+                        {% for status_group in status_list %}
+                            {% if status_group.grouper == 'accepted' %}{{ status_group.list|length }}{% endif %}
+                        {% endfor %}
+                    </h3>
+                    <p>Accepted</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <a href="{% url 'job_list' %}" class="btn btn-primary btn-lg">Browse Jobs</a>
+            <a href="{% url 'complete_profile' %}" class="btn btn-info btn-lg">Edit Profile</a>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-12">
+            <h3 class="mb-3">Your Applications</h3>
+            
+            {% if applications %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Job Title</th>
+                                <th>Company</th>
+                                <th>Status</th>
+                                <th>Applied Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for application in applications %}
+                                <tr>
+                                    <td><strong>{{ application.job.title }}</strong></td>
+                                    <td>{{ application.job.company.company_name }}</td>
+                                    <td>
+                                        {% if application.status == 'accepted' %}
+                                            <span class="badge bg-success">Accepted</span>
+                                        {% elif application.status == 'rejected' %}
+                                            <span class="badge bg-danger">Rejected</span>
+                                        {% elif application.status == 'under_review' %}
+                                            <span class="badge bg-warning">Under Review</span>
+                                        {% else %}
+                                            <span class="badge bg-info">Applied</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ application.applied_date|date:"M d, Y" }}</td>
+                                    <td>
+                                        <a href="{% url 'job_detail' application.job.id %}" class="btn btn-sm btn-primary">View Job</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    You haven't applied for any jobs yet. <a href="{% url 'job_list' %}">Browse available jobs</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

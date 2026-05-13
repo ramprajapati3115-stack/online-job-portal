@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ job.title }} - Job Portal{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card job-card mb-4">
+                <div class="card-header">
+                    <h2 class="card-title mb-0" style="color: white;">{{ job.title }}</h2>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <p><strong>Company:</strong> <span class="job-company">{{ job.company.company_name }}</span></p>
+                            <p><strong>Location:</strong> 📍 {{ job.location }}</p>
+                            <p><strong>Job Type:</strong> <span class="badge bg-primary">{{ job.get_job_type_display }}</span></p>
+                            <p><strong>Experience Level:</strong> <span class="badge bg-info">{{ job.get_experience_level_display }}</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            {% if job.salary_min %}
+                                <p><strong>Salary:</strong> 💰 ${{ job.salary_min }} - ${{ job.salary_max }}</p>
+                            {% endif %}
+                            <p><strong>Posted:</strong> {{ job.posted_date|date:"M d, Y" }}</p>
+                            {% if job.deadline %}
+                                <p><strong>Deadline:</strong> {{ job.deadline|date:"M d, Y" }}</p>
+                            {% endif %}
+                            <p><strong>Status:</strong> <span class="badge bg-success">{{ job.get_status_display }}</span></p>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <h4>Job Description</h4>
+                    <p>{{ job.description|linebreaks }}</p>
+                    
+                    <h4 class="mt-4">Requirements</h4>
+                    <p>{{ job.requirements|linebreaks }}</p>
+                    
+                    <hr>
+                    
+                    <div class="mt-4">
+                        {% if user.is_authenticated %}
+                            {% if not user_has_applied %}
+                                <a href="{% url 'apply_job' job.id %}" class="btn btn-success btn-lg">
+                                    📝 Apply Now
+                                </a>
+                            {% else %}
+                                <div class="alert alert-info">
+                                    ✓ You have already applied for this job.
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            <p class="text-muted">
+                                <a href="{% url 'login' %}" class="btn btn-primary">Login</a> or 
+                                <a href="{% url 'register' %}" class="btn btn-success">Register</a> to apply for this job.
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header" style="background-color: var(--secondary-color); color: white;">
+                    <h5 class="mb-0">Company Information</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>{{ job.company.company_name }}</strong></p>
+                    {% if job.company.bio %}
+                        <p>{{ job.company.bio }}</p>
+                    {% endif %}
+                    {% if job.company.location %}
+                        <p><strong>Location:</strong> {{ job.company.location }}</p>
+                    {% endif %}
+                    {% if job.company.phone_number %}
+                        <p><strong>Contact:</strong> {{ job.company.phone_number }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header" style="background-color: var(--primary-color); color: white;">
+                    <h5 class="mb-0">Application Stats</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Total Applications:</strong> {{ applications.count }}</p>
+                    <div>
+                        <p class="mb-2"><strong>Status Breakdown:</strong></p>
+                        {% regroup applications by status as status_list %}
+                        {% for status_group in status_list %}
+                            <p class="mb-1">
+                                <small>{{ status_group.grouper }}: {{ status_group.list|length }}</small>
+                            </p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

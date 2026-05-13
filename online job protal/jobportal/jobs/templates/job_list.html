@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block title %}Browse Jobs - Job Portal{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <!-- Sidebar Filters -->
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header" style="background-color: var(--primary-color); color: white;">
+                    <h5 class="mb-0">Search Filters</h5>
+                </div>
+                <div class="card-body">
+                    <form method="GET" action="{% url 'job_list' %}">
+                        <div class="mb-3">
+                            <label for="keyword" class="form-label">Keyword</label>
+                            <input type="text" class="form-control" id="keyword" name="keyword" 
+                                   value="{{ form.keyword.value|default:'' }}" placeholder="Search jobs...">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="location" class="form-label">Location</label>
+                            <input type="text" class="form-control" id="location" name="location" 
+                                   value="{{ form.location.value|default:'' }}" placeholder="Enter location...">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Job Type</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="job_type" value="full_time" 
+                                       id="full_time" {% if 'full_time' in form.job_type.value %}checked{% endif %}>
+                                <label class="form-check-label" for="full_time">Full Time</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="job_type" value="part_time" 
+                                       id="part_time" {% if 'part_time' in form.job_type.value %}checked{% endif %}>
+                                <label class="form-check-label" for="part_time">Part Time</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="job_type" value="contract" 
+                                       id="contract" {% if 'contract' in form.job_type.value %}checked{% endif %}>
+                                <label class="form-check-label" for="contract">Contract</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="job_type" value="internship" 
+                                       id="internship" {% if 'internship' in form.job_type.value %}checked{% endif %}>
+                                <label class="form-check-label" for="internship">Internship</label>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Experience Level</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="experience_level" value="entry" 
+                                       id="entry" {% if 'entry' in form.experience_level.value %}checked{% endif %}>
+                                <label class="form-check-label" for="entry">Entry Level</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="experience_level" value="mid" 
+                                       id="mid" {% if 'mid' in form.experience_level.value %}checked{% endif %}>
+                                <label class="form-check-label" for="mid">Mid Level</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="experience_level" value="senior" 
+                                       id="senior" {% if 'senior' in form.experience_level.value %}checked{% endif %}>
+                                <label class="form-check-label" for="senior">Senior Level</label>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100 mb-2">Search</button>
+                        <a href="{% url 'job_list' %}" class="btn btn-secondary w-100">Clear Filters</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Job Listings -->
+        <div class="col-md-9">
+            <h2 class="mb-4" style="color: var(--primary-color);">Job Listings</h2>
+            
+            {% if jobs %}
+                {% for job in jobs %}
+                    <div class="job-card card mb-3">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h5 class="job-title">{{ job.title }}</h5>
+                                    <p class="job-company mb-2">{{ job.company.company_name }}</p>
+                                    <p class="card-text text-muted">{{ job.description|truncatewords:30 }}</p>
+                                    
+                                    <div class="mb-2">
+                                        <span class="badge bg-primary">{{ job.get_job_type_display }}</span>
+                                        <span class="badge bg-info">{{ job.get_experience_level_display }}</span>
+                                        <span class="badge bg-success">{{ job.posted_date|date:"SHORT_DATE_FORMAT" }}</span>
+                                    </div>
+                                    
+                                    <p class="mb-0">
+                                        <small>📍 {{ job.location }}</small>
+                                        {% if job.salary_min %}
+                                            <br><small>💰 ${{ job.salary_min }} - ${{ job.salary_max }}</small>
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                <div class="col-md-4 text-md-end">
+                                    <a href="{% url 'job_detail' job.id %}" class="btn btn-primary">View Details</a>
+                                    {% if user.is_authenticated %}
+                                        <br>
+                                        <a href="{% url 'apply_job' job.id %}" class="btn btn-success btn-sm mt-2">Apply Now</a>
+                                    {% else %}
+                                        <br>
+                                        <p class="text-muted mt-2"><small>Login to apply</small></p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="alert alert-info">
+                    No jobs found matching your criteria. Try adjusting your filters.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

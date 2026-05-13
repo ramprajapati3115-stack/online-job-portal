@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Apply for Job - Job Portal{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header" style="background-color: var(--primary-color); color: white;">
+                    <h4 class="mb-0">Applying for: {{ job.title }}</h4>
+                </div>
+                <div class="card-body">
+                    <p><strong>Company:</strong> {{ job.company.company_name }}</p>
+                    <p><strong>Location:</strong> {{ job.location }}</p>
+                    <p><strong>Job Type:</strong> {{ job.get_job_type_display }}</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header" style="background-color: var(--secondary-color); color: white;">
+                    <h4 class="mb-0">Submit Your Application</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="cover_letter" class="form-label">Cover Letter *</label>
+                            {{ form.cover_letter }}
+                            {% if form.cover_letter.errors %}<div class="text-danger">{{ form.cover_letter.errors.0 }}</div>{% endif %}
+                            <small class="form-text text-muted">Tell the employer why you're a good fit for this job.</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="resume" class="form-label">Resume (PDF, DOC, DOCX) *</label>
+                            {{ form.resume }}
+                            {% if form.resume.errors %}<div class="text-danger">{{ form.resume.errors.0 }}</div>{% endif %}
+                            <small class="form-text text-muted">Upload your resume in PDF or Word format.</small>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'job_detail' job.id %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-success">Submit Application</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

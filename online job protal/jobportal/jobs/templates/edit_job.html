@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Job - Job Portal{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header" style="background-color: var(--primary-color); color: white;">
+                    <h4 class="mb-0">Edit Job: {{ job.title }}</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Job Title *</label>
+                            {{ form.title }}
+                            {% if form.title.errors %}<div class="text-danger">{{ form.title.errors.0 }}</div>{% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Job Description *</label>
+                            {{ form.description }}
+                            {% if form.description.errors %}<div class="text-danger">{{ form.description.errors.0 }}</div>{% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="requirements" class="form-label">Requirements *</label>
+                            {{ form.requirements }}
+                            {% if form.requirements.errors %}<div class="text-danger">{{ form.requirements.errors.0 }}</div>{% endif %}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="location" class="form-label">Location *</label>
+                                    {{ form.location }}
+                                    {% if form.location.errors %}<div class="text-danger">{{ form.location.errors.0 }}</div>{% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="job_type" class="form-label">Job Type *</label>
+                                    {{ form.job_type }}
+                                    {% if form.job_type.errors %}<div class="text-danger">{{ form.job_type.errors.0 }}</div>{% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="experience_level" class="form-label">Experience Level *</label>
+                                    {{ form.experience_level }}
+                                    {% if form.experience_level.errors %}<div class="text-danger">{{ form.experience_level.errors.0 }}</div>{% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="status" class="form-label">Status *</label>
+                                    {{ form.status }}
+                                    {% if form.status.errors %}<div class="text-danger">{{ form.status.errors.0 }}</div>{% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="salary_min" class="form-label">Minimum Salary</label>
+                                    {{ form.salary_min }}
+                                    {% if form.salary_min.errors %}<div class="text-danger">{{ form.salary_min.errors.0 }}</div>{% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="salary_max" class="form-label">Maximum Salary</label>
+                                    {{ form.salary_max }}
+                                    {% if form.salary_max.errors %}<div class="text-danger">{{ form.salary_max.errors.0 }}</div>{% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="deadline" class="form-label">Application Deadline</label>
+                            {{ form.deadline }}
+                            {% if form.deadline.errors %}<div class="text-danger">{{ form.deadline.errors.0 }}</div>{% endif %}
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'user_dashboard' %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Update Job</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

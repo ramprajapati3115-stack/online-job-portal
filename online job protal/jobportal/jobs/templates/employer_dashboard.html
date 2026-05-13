@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block title %}Employer Dashboard - Job Portal{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h2 style="color: var(--primary-color);">Employer Dashboard</h2>
+            <p>Welcome, <strong>{{ user.first_name }} {{ user.last_name }}</strong></p>
+        </div>
+    </div>
+    
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 style="color: var(--primary-color);">{{ jobs.count }}</h3>
+                    <p>Posted Jobs</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 style="color: var(--secondary-color);">{{ jobs|length }}</h3>
+                    <p>Total Applications</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <a href="{% url 'post_job' %}" class="btn btn-success btn-lg">+ Post New Job</a>
+            <a href="{% url 'complete_profile' %}" class="btn btn-info btn-lg">Edit Profile</a>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-12">
+            <h3 class="mb-3">Your Job Postings</h3>
+            
+            {% if jobs %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Job Title</th>
+                                <th>Location</th>
+                                <th>Status</th>
+                                <th>Applications</th>
+                                <th>Posted Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for job in jobs %}
+                                <tr>
+                                    <td><strong>{{ job.title }}</strong></td>
+                                    <td>{{ job.location }}</td>
+                                    <td>
+                                        {% if job.status == 'active' %}
+                                            <span class="badge bg-success">Active</span>
+                                        {% elif job.status == 'closed' %}
+                                            <span class="badge bg-danger">Closed</span>
+                                        {% else %}
+                                            <span class="badge bg-warning">Draft</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ job.applications.count }}</td>
+                                    <td>{{ job.posted_date|date:"M d, Y" }}</td>
+                                    <td>
+                                        <a href="{% url 'view_applications' job.id %}" class="btn btn-sm btn-primary">View</a>
+                                        <a href="{% url 'edit_job' job.id %}" class="btn btn-sm btn-warning">Edit</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    You haven't posted any jobs yet. <a href="{% url 'post_job' %}">Post your first job</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
